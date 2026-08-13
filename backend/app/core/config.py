@@ -1,9 +1,13 @@
 from functools import lru_cache
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="ignore",
+    )
 
     app_name: str = "SafeLink"
     app_version: str = "1.0.0"
@@ -12,6 +16,19 @@ class Settings(BaseSettings):
 
     # Database
     database_url: str = "postgresql+asyncpg://safelink:safelink@postgres:5432/safelink"
+
+    @property
+    def database_url_async(self) -> str:
+        url = self.database_url
+
+        if url.startswith("postgresql://"):
+            return url.replace(
+                "postgresql://",
+                "postgresql+asyncpg://",
+                1,
+            )
+
+        return url
 
     # Redis
     redis_url: str = "redis://redis:6379/0"
@@ -27,10 +44,10 @@ class Settings(BaseSettings):
     http_connect_timeout: float = 5.0
     http_total_timeout: float = 15.0
     http_max_redirects: int = 5
-    http_max_response_size: int = 512_000  # 512 KB
+    http_max_response_size: int = 512_000
     http_max_concurrent: int = 10
 
-    # Scan retention (hours)
+    # Scan retention
     scan_retention_hours: int = 24
 
     # Risk scoring thresholds
@@ -40,7 +57,7 @@ class Settings(BaseSettings):
 
     # Reputation providers
     reputation_api_key: str = ""
-    reputation_provider: str = "mock"  # mock | virustotal
+    reputation_provider: str = "mock"
 
     # Security
     max_url_length: int = 2048
@@ -48,7 +65,11 @@ class Settings(BaseSettings):
 
     @property
     def cors_origin_list(self) -> list[str]:
-        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+        return [
+            o.strip()
+            for o in self.cors_origins.split(",")
+            if o.strip()
+        ]
 
 
 @lru_cache
