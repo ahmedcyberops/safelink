@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+.next/
+out/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+postgres_data/
+
+# Build
+dist/
+build/
+
+# Logs
+*.log
+
+# Test
+.pytest_cache/
+test.db
+.coverage
+htmlcov/
+
+# Secrets
+.env.local
+.env.production
